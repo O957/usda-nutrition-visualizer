@@ -1,0 +1,205 @@
+{
+  "vitamin_a_ug": {
+    "rda_male": 900,
+    "rda_female": 700,
+    "upper_limit": 3000,
+    "unit": "\u03bcg",
+    "name": "Vitamin A"
+  },
+  "vitamin_d_ug": {
+    "rda_male": 15,
+    "rda_female": 15,
+    "upper_limit": 100,
+    "unit": "\u03bcg",
+    "name": "Vitamin D"
+  },
+  "vitamin_e_mg": {
+    "rda_male": 15,
+    "rda_female": 15,
+    "upper_limit": 1000,
+    "unit": "mg",
+    "name": "Vitamin E"
+  },
+  "vitamin_k_ug": {
+    "rda_male": 120,
+    "rda_female": 90,
+    "upper_limit": null,
+    "unit": "\u03bcg",
+    "name": "Vitamin K"
+  },
+  "vitamin_c_mg": {
+    "rda_male": 90,
+    "rda_female": 75,
+    "upper_limit": 2000,
+    "unit": "mg",
+    "name": "Vitamin C"
+  },
+  "thiamin_mg": {
+    "rda_male": 1.2,
+    "rda_female": 1.1,
+    "upper_limit": null,
+    "unit": "mg",
+    "name": "Thiamin (B1)"
+  },
+  "riboflavin_mg": {
+    "rda_male": 1.3,
+    "rda_female": 1.1,
+    "upper_limit": null,
+    "unit": "mg",
+    "name": "Riboflavin (B2)"
+  },
+  "niacin_mg": {
+    "rda_male": 16,
+    "rda_female": 14,
+    "upper_limit": 35,
+    "unit": "mg",
+    "name": "Niacin (B3)"
+  },
+  "vitamin_b6_mg": {
+    "rda_male": 1.3,
+    "rda_female": 1.3,
+    "upper_limit": 100,
+    "unit": "mg",
+    "name": "Vitamin B6"
+  },
+  "folate_ug": {
+    "rda_male": 400,
+    "rda_female": 400,
+    "upper_limit": 1000,
+    "unit": "\u03bcg",
+    "name": "Folate"
+  },
+  "vitamin_b12_ug": {
+    "rda_male": 2.4,
+    "rda_female": 2.4,
+    "upper_limit": null,
+    "unit": "\u03bcg",
+    "name": "Vitamin B12"
+  },
+  "calcium_mg": {
+    "rda_male": 1000,
+    "rda_female": 1000,
+    "upper_limit": 2500,
+    "unit": "mg",
+    "name": "Calcium"
+  },
+  "iron_mg": {
+    "rda_male": 8,
+    "rda_female": 18,
+    "upper_limit": 45,
+    "unit": "mg",
+    "name": "Iron"
+  },
+  "magnesium_mg": {
+    "rda_male": 400,
+    "rda_female": 310,
+    "upper_limit": 350,
+    "unit": "mg",
+    "name": "Magnesium"
+  },
+  "phosphorus_mg": {
+    "rda_male": 700,
+    "rda_female": 700,
+    "upper_limit": 4000,
+    "unit": "mg",
+    "name": "Phosphorus"
+  },
+  "potassium_mg": {
+    "rda_male": 3400,
+    "rda_female": 2600,
+    "upper_limit": null,
+    "unit": "mg",
+    "name": "Potassium"
+  },
+  "sodium_mg": {
+    "rda_male": 1500,
+    "rda_female": 1500,
+    "upper_limit": 2300,
+    "unit": "mg",
+    "name": "Sodium"
+  },
+  "zinc_mg": {
+    "rda_male": 11,
+    "rda_female": 8,
+    "upper_limit": 40,
+    "unit": "mg",
+    "name": "Zinc"
+  },
+  "copper_mg": {
+    "rda_male": 0.9,
+    "rda_female": 0.9,
+    "upper_limit": 10,
+    "unit": "mg",
+    "name": "Copper"
+  },
+  "selenium_ug": {
+    "rda_male": 55,
+    "rda_female": 55,
+    "upper_limit": 400,
+    "unit": "\u03bcg",
+    "name": "Selenium"
+  },
+  "manganese_mg": {
+    "rda_male": 2.3,
+    "rda_female": 1.8,
+    "upper_limit": 11,
+    "unit": "mg",
+    "name": "Manganese"
+  },
+  "chromium_ug": {
+    "rda_male": 35,
+    "rda_female": 25,
+    "upper_limit": null,
+    "unit": "\u03bcg",
+    "name": "Chromium"
+  },
+  "molybdenum_ug": {
+    "rda_male": 45,
+    "rda_female": 45,
+    "upper_limit": 2000,
+    "unit": "\u03bcg",
+    "name": "Molybdenum"
+  },
+  "iodine_ug": {
+    "rda_male": 150,
+    "rda_female": 150,
+    "upper_limit": 1100,
+    "unit": "\u03bcg",
+    "name": "Iodine"
+  },
+  "protein_g": {
+    "rda_male": 56,
+    "rda_female": 46,
+    "upper_limit": null,
+    "unit": "g",
+    "name": "Protein"
+  },
+  "fiber_g": {
+    "rda_male": 38,
+    "rda_female": 25,
+    "upper_limit": null,
+    "unit": "g",
+    "name": "Dietary Fiber"
+  },
+  "saturated_fat_g": {
+    "rda_male": null,
+    "rda_female": null,
+    "upper_limit": 20,
+    "unit": "g",
+    "name": "Saturated Fat"
+  },
+  "cholesterol_mg": {
+    "rda_male": null,
+    "rda_female": null,
+    "upper_limit": 300,
+    "unit": "mg",
+    "name": "Cholesterol"
+  },
+  "sugars_g": {
+    "rda_male": null,
+    "rda_female": null,
+    "upper_limit": 50,
+    "unit": "g",
+    "name": "Added Sugars"
+  }
+}
