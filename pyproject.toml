@@ -23,3 +23,6 @@ Issues = "https://github.com/O957/O957-Template/issues"
 
 [tool.ruff.lint.mccabe]
 max-complexity = 15
+
+[tool.deptry]
+known_first_party = ["nutrient_processor", "nutritional_guidelines", "usda_api", "app"]
