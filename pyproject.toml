@@ -9,6 +9,12 @@ license = "Apache-2.0"
 readme = "README.md"
 keywords = ["design-patterns", "template", "standards"]
 requires-python = ">=3.13"
+dependencies = [
+    "altair>=5.5.0",
+    "polars>=1.34.0",
+    "requests>=2.32.5",
+    "streamlit>=1.50.0",
+]
 
 [project.urls]
 Repository = "https://github.com/AFg6K7h4fhy2/AFg6K7h4fhy2-Template"
