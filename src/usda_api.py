@@ -37,7 +37,9 @@ class USDAFoodDataClient:
         self.cache_dir = Path("data/cache")
         self.cache_dir.mkdir(parents=True, exist_ok=True)
 
-    def search_foods(self, query: str, page_size: int = 50, max_retries: int = 3) -> dict:
+    def search_foods(
+        self, query: str, page_size: int = 50, max_retries: int = 3
+    ) -> dict:
         """
         Search for foods by name with retry logic for rate limiting.
 
@@ -58,7 +60,7 @@ class USDAFoodDataClient:
         cache_file = self.cache_dir / f"search_{query.replace(' ', '_')}.json"
 
         if cache_file.exists():
-            with open(cache_file, "r") as f:
+            with open(cache_file) as f:
                 return json.load(f)
 
         url = f"{self.base_url}/foods/search"
@@ -66,7 +68,7 @@ class USDAFoodDataClient:
             "api_key": self.api_key,
             "query": query,
             "pageSize": page_size,
-            "dataType": ["Foundation", "SR Legacy"]
+            "dataType": ["Foundation", "SR Legacy"],
         }
 
         # retry logic with exponential backoff
@@ -83,7 +85,7 @@ class USDAFoodDataClient:
             except requests.exceptions.HTTPError as e:
                 if e.response.status_code == 429 and attempt < max_retries - 1:
                     # exponential backoff: 5s, 15s, 45s
-                    wait_time = 5 * (3 ** attempt)
+                    wait_time = 5 * (3**attempt)
                     time.sleep(wait_time)
                 else:
                     raise
@@ -109,7 +111,7 @@ class USDAFoodDataClient:
         cache_file = self.cache_dir / f"food_{fdc_id}.json"
 
         if cache_file.exists():
-            with open(cache_file, "r") as f:
+            with open(cache_file) as f:
                 return json.load(f)
 
         url = f"{self.base_url}/food/{fdc_id}"
@@ -129,7 +131,7 @@ class USDAFoodDataClient:
             except requests.exceptions.HTTPError as e:
                 if e.response.status_code == 429 and attempt < max_retries - 1:
                     # exponential backoff: 5s, 15s, 45s
-                    wait_time = 5 * (3 ** attempt)
+                    wait_time = 5 * (3**attempt)
                     time.sleep(wait_time)
                 else:
                     raise
@@ -152,11 +154,31 @@ class USDAFoodDataClient:
 
         # search for common food categories
         common_queries = [
-            "apple", "banana", "orange", "strawberry", "grapes",
-            "carrot", "broccoli", "spinach", "potato", "tomato",
-            "chicken", "beef", "pork", "fish", "egg",
-            "milk", "cheese", "yogurt", "bread", "rice",
-            "beans", "nuts", "almonds", "peanuts", "oatmeal"
+            "apple",
+            "banana",
+            "orange",
+            "strawberry",
+            "grapes",
+            "carrot",
+            "broccoli",
+            "spinach",
+            "potato",
+            "tomato",
+            "chicken",
+            "beef",
+            "pork",
+            "fish",
+            "egg",
+            "milk",
+            "cheese",
+            "yogurt",
+            "bread",
+            "rice",
+            "beans",
+            "nuts",
+            "almonds",
+            "peanuts",
+            "oatmeal",
         ]
 
         all_foods = []
@@ -166,7 +188,9 @@ class USDAFoodDataClient:
             try:
                 results = self.search_foods(query, page_size=5)
                 if "foods" in results:
-                    for food in results["foods"][:3]:  # top 3 results per query
+                    for food in results["foods"][
+                        :3
+                    ]:  # top 3 results per query
                         food_data = self.get_food_nutrients(food["fdcId"])
                         processed = self._process_food_data(food_data)
                         if processed:
@@ -196,6 +220,7 @@ class USDAFoodDataClient:
         dict | None
             Processed food data or None if processing fails.
         """
+
         def format_food_name(name: str) -> str:
             """Format food name by capitalizing and replacing commas with parentheses."""
             if "," in name:
@@ -210,21 +235,31 @@ class USDAFoodDataClient:
                 "description": format_food_name(description),
                 "data_type": food_data.get("dataType", ""),
                 "serving_size": 100.0,  # default to 100g
-                "serving_unit": "g"
+                "serving_unit": "g",
             }
 
             # extract nutrients
             if "foodNutrients" in food_data:
                 for nutrient in food_data["foodNutrients"]:
                     if "nutrient" in nutrient:
-                        name = nutrient["nutrient"].get("name", "").replace(",", "")
+                        name = (
+                            nutrient["nutrient"]
+                            .get("name", "")
+                            .replace(",", "")
+                        )
                         unit = nutrient["nutrient"].get("unitName", "")
                         amount = nutrient.get("amount")
 
                         if amount is not None:
                             # normalize nutrient names
-                            name_normalized = name.lower().replace(" ", "_").replace("-", "_")
-                            processed[f"{name_normalized}_{unit}"] = float(amount)
+                            name_normalized = (
+                                name.lower()
+                                .replace(" ", "_")
+                                .replace("-", "_")
+                            )
+                            processed[f"{name_normalized}_{unit}"] = float(
+                                amount
+                            )
 
             return processed
         except Exception as e:
@@ -255,8 +290,8 @@ def fetch_all_foods_paginated():
             "query": "*",
             "dataType": ["Foundation", "SR Legacy"],
             "pageSize": 200,
-            "pageNumber": 1
-        }
+            "pageNumber": 1,
+        },
     )
     response.raise_for_status()
     first_page = response.json()
@@ -271,7 +306,10 @@ def fetch_all_foods_paginated():
 
     # fetch remaining pages
     for page_num in range(2, total_pages + 1):
-        print(f"Fetching page {page_num}/{total_pages} ({len(all_food_items)} foods so far)", end='\r')
+        print(
+            f"Fetching page {page_num}/{total_pages} ({len(all_food_items)} foods so far)",
+            end="\r",
+        )
 
         try:
             response = requests.get(
@@ -281,8 +319,8 @@ def fetch_all_foods_paginated():
                     "query": "*",
                     "dataType": ["Foundation", "SR Legacy"],
                     "pageSize": 200,
-                    "pageNumber": page_num
-                }
+                    "pageNumber": page_num,
+                },
             )
             response.raise_for_status()
             page_data = response.json()
@@ -328,7 +366,9 @@ def fetch_and_save_food_database(api_key: str, max_foods: int | None = None):
         print(f"Limiting to first {max_foods} foods for testing")
 
     # now fetch detailed nutrient data for each food
-    print(f"\nFetching detailed nutrient data for {len(all_food_items)} foods...")
+    print(
+        f"\nFetching detailed nutrient data for {len(all_food_items)} foods..."
+    )
     print(f"Estimated time: {len(all_food_items) * 0.5 / 60:.1f} minutes\n")
 
     all_foods = []
@@ -339,7 +379,10 @@ def fetch_and_save_food_database(api_key: str, max_foods: int | None = None):
         if not fdc_id:
             continue
 
-        print(f"Processing: {i+1}/{len(all_food_items)} ({len(all_foods)} saved, {failed_count} failed)", end='\r')
+        print(
+            f"Processing: {i + 1}/{len(all_food_items)} ({len(all_foods)} saved, {failed_count} failed)",
+            end="\r",
+        )
 
         try:
             food_data = client.get_food_nutrients(fdc_id)
@@ -361,14 +404,16 @@ def fetch_and_save_food_database(api_key: str, max_foods: int | None = None):
         df.write_parquet("data/food_nutrient_database.parquet")
 
         # calculate file size
-        file_size_mb = Path("data/food_nutrient_database.parquet").stat().st_size / (1024 * 1024)
+        file_size_mb = Path(
+            "data/food_nutrient_database.parquet"
+        ).stat().st_size / (1024 * 1024)
 
-        print(f"\n✓ Successfully saved database!")
+        print("\n✓ Successfully saved database!")
         print(f"  Foods: {len(df)}")
         print(f"  Nutrients: {len(df.columns) - 5}")
         print(f"  File size: {file_size_mb:.1f} MB")
         print(f"  Failed: {failed_count}")
-        print(f"  Location: data/food_nutrient_database.parquet")
+        print("  Location: data/food_nutrient_database.parquet")
 
         return df
 
@@ -393,19 +438,19 @@ Examples:
   python3 usda_api.py
 
 Get a free API key at: https://fdc.nal.usda.gov/api-key-signup.html
-        """
+        """,
     )
 
     parser.add_argument(
         "--api-key",
         type=str,
-        help="USDA FoodData Central API key (or set USDA_API_KEY env var)"
+        help="USDA FoodData Central API key (or set USDA_API_KEY env var)",
     )
     parser.add_argument(
         "--max-foods",
         type=int,
         default=None,
-        help="Maximum number of foods to fetch (for testing)"
+        help="Maximum number of foods to fetch (for testing)",
     )
 
     args = parser.parse_args()

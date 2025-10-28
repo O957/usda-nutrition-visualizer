@@ -10,7 +10,11 @@ from nutritional_guidelines import NutritionalGuidelines
 class NutrientProcessor:
     """Process and analyze nutrient data from food database."""
 
-    def __init__(self, database_path: str = "data/food_nutrient_database.parquet", gender: str = "average"):
+    def __init__(
+        self,
+        database_path: str = "data/food_nutrient_database.parquet",
+        gender: str = "average",
+    ):
         """
         Initialize nutrient processor.
 
@@ -41,8 +45,18 @@ class NutrientProcessor:
         self.df = self.df.unique(subset=["description"])
 
         # fill null values with 0 for nutrient columns
-        nutrient_cols = [col for col in self.df.columns if col not in
-                        ["fdc_id", "description", "data_type", "serving_size", "serving_unit"]]
+        nutrient_cols = [
+            col
+            for col in self.df.columns
+            if col
+            not in [
+                "fdc_id",
+                "description",
+                "data_type",
+                "serving_size",
+                "serving_unit",
+            ]
+        ]
 
         fill_expr = [
             pl.col(col).fill_null(0.0) if col in nutrient_cols else pl.col(col)
@@ -62,7 +76,13 @@ class NutrientProcessor:
         if self.df.is_empty():
             return []
 
-        exclude_cols = ["fdc_id", "description", "data_type", "serving_size", "serving_unit"]
+        exclude_cols = [
+            "fdc_id",
+            "description",
+            "data_type",
+            "serving_size",
+            "serving_unit",
+        ]
         return [col for col in self.df.columns if col not in exclude_cols]
 
     def get_food_nutrients(self, food_name: str) -> pl.DataFrame:
@@ -83,26 +103,31 @@ class NutrientProcessor:
             return pl.DataFrame()
 
         # first try exact match
-        exact_matches = self.df.filter(
-            pl.col("description") == food_name
-        )
+        exact_matches = self.df.filter(pl.col("description") == food_name)
 
         if not exact_matches.is_empty():
             matches = exact_matches
         else:
             # escape special regex characters and do partial search
             import re
+
             escaped_name = re.escape(food_name.lower())
             matches = self.df.filter(
-                pl.col("description").str.to_lowercase().str.contains(escaped_name)
+                pl.col("description")
+                .str.to_lowercase()
+                .str.contains(escaped_name)
             )
 
             # if still no matches, try without parentheses
             if matches.is_empty():
                 # remove content in parentheses and try simpler search
-                simple_name = re.sub(r'\([^)]*\)', '', food_name).strip().lower()
+                simple_name = (
+                    re.sub(r"\([^)]*\)", "", food_name).strip().lower()
+                )
                 matches = self.df.filter(
-                    pl.col("description").str.to_lowercase().str.contains(re.escape(simple_name))
+                    pl.col("description")
+                    .str.to_lowercase()
+                    .str.contains(re.escape(simple_name))
                 )
 
         if matches.is_empty():
@@ -112,15 +137,21 @@ class NutrientProcessor:
         nutrient_cols = self.get_available_nutrients()
 
         # melt to long format for easier visualization
-        result = matches.select(["description"] + nutrient_cols).melt(
-            id_vars=["description"],
-            variable_name="nutrient",
-            value_name="amount"
-        ).filter(pl.col("amount") > 0)  # only non-zero nutrients
+        result = (
+            matches.select(["description"] + nutrient_cols)
+            .melt(
+                id_vars=["description"],
+                variable_name="nutrient",
+                value_name="amount",
+            )
+            .filter(pl.col("amount") > 0)
+        )  # only non-zero nutrients
 
         return result
 
-    def get_top_foods_for_nutrient(self, nutrient_name: str, top_n: int = 20) -> pl.DataFrame:
+    def get_top_foods_for_nutrient(
+        self, nutrient_name: str, top_n: int = 20
+    ) -> pl.DataFrame:
         """
         Get foods with highest content of a specific nutrient.
 
@@ -140,7 +171,11 @@ class NutrientProcessor:
             return pl.DataFrame()
 
         # find matching nutrient column
-        nutrient_cols = [col for col in self.df.columns if nutrient_name.lower() in col.lower()]
+        nutrient_cols = [
+            col
+            for col in self.df.columns
+            if nutrient_name.lower() in col.lower()
+        ]
 
         if not nutrient_cols:
             return pl.DataFrame()
@@ -149,13 +184,13 @@ class NutrientProcessor:
 
         # get top foods
         result = (
-            self.df
-            .select(["description", nutrient_col, "serving_size"])
+            self.df.select(["description", nutrient_col, "serving_size"])
             .filter(pl.col(nutrient_col) > 0)
             .with_columns(
                 # calculate per ounce (28.35g)
-                (pl.col(nutrient_col) * 28.35 / pl.col("serving_size"))
-                .alias("amount_per_ounce")
+                (pl.col(nutrient_col) * 28.35 / pl.col("serving_size")).alias(
+                    "amount_per_ounce"
+                )
             )
             .sort("amount_per_ounce", descending=True)
             .head(top_n)
@@ -190,7 +225,9 @@ class NutrientProcessor:
 
             # find matching food
             matches = self.df.filter(
-                pl.col("description").str.to_lowercase().str.contains(food_name.lower())
+                pl.col("description")
+                .str.to_lowercase()
+                .str.contains(food_name.lower())
             )
 
             if not matches.is_empty():
@@ -209,10 +246,12 @@ class NutrientProcessor:
 
         # convert to dataframe
         if nutrient_totals:
-            result = pl.DataFrame({
-                "nutrient": list(nutrient_totals.keys()),
-                "total_amount": list(nutrient_totals.values())
-            })
+            result = pl.DataFrame(
+                {
+                    "nutrient": list(nutrient_totals.keys()),
+                    "total_amount": list(nutrient_totals.values()),
+                }
+            )
 
             # add daily value percentages
             dv_percentages = []
@@ -220,10 +259,14 @@ class NutrientProcessor:
                 # try to match with guidelines
                 matched_key = self.guidelines.match_nutrient_key(nutrient)
                 if matched_key:
-                    req = self.guidelines.get_requirement(matched_key, self.gender)
+                    req = self.guidelines.get_requirement(
+                        matched_key, self.gender
+                    )
                     if req.get("rda"):
                         idx = result["nutrient"].to_list().index(nutrient)
-                        percentage = (result["total_amount"][idx] / req["rda"]) * 100
+                        percentage = (
+                            result["total_amount"][idx] / req["rda"]
+                        ) * 100
                         dv_percentages.append(percentage)
                     else:
                         dv_percentages.append(None)
@@ -254,7 +297,11 @@ class NutrientProcessor:
         """
         status = {}
 
-        for nutrient, amount in zip(nutrient_profile["nutrient"], nutrient_profile["total_amount"]):
+        for nutrient, amount in zip(
+            nutrient_profile["nutrient"],
+            nutrient_profile["total_amount"],
+            strict=False,
+        ):
             # match with guidelines
             matched_key = self.guidelines.match_nutrient_key(nutrient)
             if matched_key:
@@ -266,7 +313,7 @@ class NutrientProcessor:
                     "amount": amount,
                     "min": rda,
                     "max": upper_limit,
-                    "unit": req["unit"]
+                    "unit": req["unit"],
                 }
 
                 if rda and amount < rda:

@@ -7,8 +7,6 @@ import polars as pl
 import streamlit as st
 
 from nutrient_processor import NutrientProcessor
-from nutritional_guidelines import NutritionalGuidelines
-from usda_api import USDAFoodDataClient, fetch_and_save_food_database
 
 
 def format_nutrient_name(nutrient_name: str) -> str:
@@ -63,7 +61,9 @@ def initialize_data():
     return st.session_state.processor
 
 
-def create_nutrient_bar_chart(nutrient_data: pl.DataFrame, title: str) -> alt.Chart:
+def create_nutrient_bar_chart(
+    nutrient_data: pl.DataFrame, title: str
+) -> alt.Chart:
     """
     Create Altair bar chart for nutrient data.
 
@@ -80,11 +80,15 @@ def create_nutrient_bar_chart(nutrient_data: pl.DataFrame, title: str) -> alt.Ch
         Altair chart object.
     """
     if nutrient_data.is_empty():
-        return alt.Chart().mark_text().encode(text=alt.value("No data available"))
+        return (
+            alt.Chart().mark_text().encode(text=alt.value("No data available"))
+        )
 
     # format nutrient names for display
     formatted_data = nutrient_data.with_columns(
-        pl.col("nutrient").map_elements(format_nutrient_name, return_dtype=pl.Utf8).alias("nutrient_display")
+        pl.col("nutrient")
+        .map_elements(format_nutrient_name, return_dtype=pl.Utf8)
+        .alias("nutrient_display")
     )
 
     # convert to pandas for altair
@@ -96,12 +100,16 @@ def create_nutrient_bar_chart(nutrient_data: pl.DataFrame, title: str) -> alt.Ch
         .mark_bar()
         .encode(
             x=alt.X("amount:Q", title="Amount"),
-            y=alt.Y("nutrient_display:N", sort=alt.EncodingSortField(field="amount", order="descending"), title="Nutrient"),
+            y=alt.Y(
+                "nutrient_display:N",
+                sort=alt.EncodingSortField(field="amount", order="descending"),
+                title="Nutrient",
+            ),
             color=alt.Color("amount:Q", scale=alt.Scale(scheme="viridis")),
             tooltip=[
                 alt.Tooltip("nutrient_display:N", title="Nutrient"),
-                alt.Tooltip("amount:Q", title="Amount", format=".2f")
-            ]
+                alt.Tooltip("amount:Q", title="Amount", format=".2f"),
+            ],
         )
         .properties(title=title, width=600, height=400)
         .interactive()
@@ -110,7 +118,9 @@ def create_nutrient_bar_chart(nutrient_data: pl.DataFrame, title: str) -> alt.Ch
     return chart
 
 
-def create_food_ranking_chart(food_data: pl.DataFrame, nutrient_name: str) -> alt.Chart:
+def create_food_ranking_chart(
+    food_data: pl.DataFrame, nutrient_name: str
+) -> alt.Chart:
     """
     Create Altair bar chart for food rankings by nutrient.
 
@@ -127,7 +137,9 @@ def create_food_ranking_chart(food_data: pl.DataFrame, nutrient_name: str) -> al
         Altair chart object.
     """
     if food_data.is_empty():
-        return alt.Chart().mark_text().encode(text=alt.value("No data available"))
+        return (
+            alt.Chart().mark_text().encode(text=alt.value("No data available"))
+        )
 
     # convert to pandas
     df_pandas = food_data.to_pandas()
@@ -139,13 +151,15 @@ def create_food_ranking_chart(food_data: pl.DataFrame, nutrient_name: str) -> al
         .encode(
             x=alt.X("amount_per_ounce:Q", title="Amount per Ounce"),
             y=alt.Y("description:N", sort="-x", title="Food"),
-            color=alt.Color("amount_per_ounce:Q", scale=alt.Scale(scheme="blues")),
-            tooltip=["description", "amount_per_100g", "amount_per_ounce"]
+            color=alt.Color(
+                "amount_per_ounce:Q", scale=alt.Scale(scheme="blues")
+            ),
+            tooltip=["description", "amount_per_100g", "amount_per_ounce"],
         )
         .properties(
             title=f"Top Foods for {nutrient_name} (per ounce)",
             width=600,
-            height=500
+            height=500,
         )
         .interactive()
     )
@@ -165,11 +179,7 @@ def render_food_analysis(processor: NutrientProcessor):
     # food selection
     col1, col2 = st.columns([2, 1])
     with col1:
-        selected_food = st.selectbox(
-            "Select a food:",
-            food_list,
-            index=0
-        )
+        selected_food = st.selectbox("Select a food:", food_list, index=0)
 
     if selected_food:
         # get nutrient data
@@ -180,25 +190,28 @@ def render_food_analysis(processor: NutrientProcessor):
             st.subheader(f"Nutrient Profile: {selected_food}")
 
             # filter for significant nutrients
-            significant_nutrients = nutrient_data.filter(pl.col("amount") > 0.1)
+            significant_nutrients = nutrient_data.filter(
+                pl.col("amount") > 0.1
+            )
 
             # create tabs for different nutrient categories
-            tab1, tab2, tab3 = st.tabs(["Vitamins", "Minerals", "Macronutrients"])
+            tab1, tab2, tab3 = st.tabs(
+                ["Vitamins", "Minerals", "Macronutrients"]
+            )
 
             with tab1:
                 # filter for vitamins
                 vitamin_data = significant_nutrients.filter(
-                    pl.col("nutrient").str.contains("(?i)vitamin") |
-                    pl.col("nutrient").str.contains("(?i)folate") |
-                    pl.col("nutrient").str.contains("(?i)thiamin") |
-                    pl.col("nutrient").str.contains("(?i)riboflavin") |
-                    pl.col("nutrient").str.contains("(?i)niacin")
+                    pl.col("nutrient").str.contains("(?i)vitamin")
+                    | pl.col("nutrient").str.contains("(?i)folate")
+                    | pl.col("nutrient").str.contains("(?i)thiamin")
+                    | pl.col("nutrient").str.contains("(?i)riboflavin")
+                    | pl.col("nutrient").str.contains("(?i)niacin")
                 )
                 if not vitamin_data.is_empty():
                     st.write(f"Found {len(vitamin_data)} vitamins:")
                     chart = create_nutrient_bar_chart(
-                        vitamin_data,
-                        f"Vitamin Content in {selected_food}"
+                        vitamin_data, f"Vitamin Content in {selected_food}"
                     )
                     st.altair_chart(chart, use_container_width=True)
                 else:
@@ -206,8 +219,17 @@ def render_food_analysis(processor: NutrientProcessor):
 
             with tab2:
                 # filter for minerals
-                mineral_keywords = ["calcium", "iron", "magnesium", "phosphorus",
-                                  "potassium", "sodium", "zinc", "copper", "selenium"]
+                mineral_keywords = [
+                    "calcium",
+                    "iron",
+                    "magnesium",
+                    "phosphorus",
+                    "potassium",
+                    "sodium",
+                    "zinc",
+                    "copper",
+                    "selenium",
+                ]
                 mineral_conditions = [
                     pl.col("nutrient").str.contains(f"(?i){keyword}")
                     for keyword in mineral_keywords
@@ -220,8 +242,7 @@ def render_food_analysis(processor: NutrientProcessor):
 
                 if not mineral_data.is_empty():
                     chart = create_nutrient_bar_chart(
-                        mineral_data,
-                        f"Mineral Content in {selected_food}"
+                        mineral_data, f"Mineral Content in {selected_food}"
                     )
                     st.altair_chart(chart, use_container_width=True)
                 else:
@@ -229,7 +250,14 @@ def render_food_analysis(processor: NutrientProcessor):
 
             with tab3:
                 # filter for macronutrients
-                macro_keywords = ["protein", "fat", "carbohydrate", "fiber", "sugar", "energy"]
+                macro_keywords = [
+                    "protein",
+                    "fat",
+                    "carbohydrate",
+                    "fiber",
+                    "sugar",
+                    "energy",
+                ]
                 macro_conditions = [
                     pl.col("nutrient").str.contains(f"(?i){keyword}")
                     for keyword in macro_keywords
@@ -242,8 +270,7 @@ def render_food_analysis(processor: NutrientProcessor):
 
                 if not macro_data.is_empty():
                     chart = create_nutrient_bar_chart(
-                        macro_data,
-                        f"Macronutrient Content in {selected_food}"
+                        macro_data, f"Macronutrient Content in {selected_food}"
                     )
                     st.altair_chart(chart, use_container_width=True)
                 else:
@@ -254,11 +281,12 @@ def render_food_analysis(processor: NutrientProcessor):
                 st.dataframe(significant_nutrients.to_pandas())
 
 
-
 def render_nutrient_ranking(processor: NutrientProcessor):
     """Render the nutrient ranking page."""
     st.header("Foods Ranked by Nutrient Content")
-    st.markdown("Select a nutrient to see foods with the highest content per ounce")
+    st.markdown(
+        "Select a nutrient to see foods with the highest content per ounce"
+    )
 
     # get available nutrients
     available_nutrients = processor.get_available_nutrients()
@@ -277,13 +305,13 @@ def render_nutrient_ranking(processor: NutrientProcessor):
         nutrient_display_names.append(display_name)
 
     # create mapping
-    nutrient_map = dict(zip(nutrient_display_names, available_nutrients))
+    nutrient_map = dict(
+        zip(nutrient_display_names, available_nutrients, strict=False)
+    )
 
     # nutrient selection
     selected_display = st.selectbox(
-        "Select a nutrient:",
-        nutrient_display_names,
-        index=0
+        "Select a nutrient:", nutrient_display_names, index=0
     )
 
     if selected_display:
@@ -292,27 +320,38 @@ def render_nutrient_ranking(processor: NutrientProcessor):
         # get top foods to determine available count
         all_foods_for_nutrient = processor.get_top_foods_for_nutrient(
             selected_nutrient.split("_")[0],  # use base nutrient name
-            top_n=1000  # high number to get all available
+            top_n=1000,  # high number to get all available
         )
         available_count = all_foods_for_nutrient.shape[0]
 
         # check if data is available
         if available_count == 0:
-            st.warning(f"No foods in the database have {selected_display} data.")
+            st.warning(
+                f"No foods in the database have {selected_display} data."
+            )
         else:
             # get top foods
             col1, col2 = st.columns([3, 1])
             with col1:
-                st.info(f"**{available_count}** foods available with {selected_display} data")
+                st.info(
+                    f"**{available_count}** foods available with {selected_display} data"
+                )
             with col2:
-                max_foods = min(available_count, 150)  # cap at 150 for performance
+                max_foods = min(
+                    available_count, 150
+                )  # cap at 150 for performance
                 min_foods = min(5, max_foods)  # ensure min <= max
                 default_foods = min(15, max_foods)
-                top_n = st.slider("Number of foods to show:", min_foods, max_foods, default_foods)
+                top_n = st.slider(
+                    "Number of foods to show:",
+                    min_foods,
+                    max_foods,
+                    default_foods,
+                )
 
             top_foods = processor.get_top_foods_for_nutrient(
                 selected_nutrient.split("_")[0],  # use base nutrient name
-                top_n=top_n
+                top_n=top_n,
             )
 
             if not top_foods.is_empty():
@@ -322,29 +361,30 @@ def render_nutrient_ranking(processor: NutrientProcessor):
 
                 # show data table
                 with st.expander("View Data Table"):
-                    display_df = top_foods.select([
-                        pl.col("description").alias("Food"),
-                        pl.col("amount_per_100g").round(2).alias("Per 100g"),
-                        pl.col("amount_per_ounce").round(2).alias("Per Ounce")
-                    ])
+                    display_df = top_foods.select(
+                        [
+                            pl.col("description").alias("Food"),
+                            pl.col("amount_per_100g")
+                            .round(2)
+                            .alias("Per 100g"),
+                            pl.col("amount_per_ounce")
+                            .round(2)
+                            .alias("Per Ounce"),
+                        ]
+                    )
                     st.dataframe(display_df.to_pandas())
             else:
                 st.warning(f"No data available for {selected_display}")
 
 
-
-
-
-
 def main():
     """Main streamlit application."""
-    st.set_page_config(
-        page_title="Food Nutrient Analysis",
-        layout="wide"
-    )
+    st.set_page_config(page_title="Food Nutrient Analysis", layout="wide")
 
     st.title("Food Nutrient Analysis")
-    st.markdown("Analyze nutrient content of foods using USDA FoodData Central")
+    st.markdown(
+        "Analyze nutrient content of foods using USDA FoodData Central"
+    )
 
     # initialize data
     processor = initialize_data()
@@ -364,8 +404,7 @@ def main():
     # sidebar for navigation
     st.sidebar.header("Navigation")
     mode = st.sidebar.radio(
-        "Select Mode",
-        ["Food Analysis", "Nutrient Ranking"]
+        "Select Mode", ["Food Analysis", "Nutrient Ranking"]
     )
 
     if mode == "Food Analysis":

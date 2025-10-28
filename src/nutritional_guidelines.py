@@ -5,15 +5,15 @@ Based on Dietary Reference Intakes (DRIs) and Recommended Dietary Allowances (RD
 
 import json
 from dataclasses import dataclass
-from typing import Dict, Optional
 
 
 @dataclass
 class NutrientRequirement:
     """Individual nutrient requirement with min/max values."""
-    rda_male: Optional[float] = None
-    rda_female: Optional[float] = None
-    upper_limit: Optional[float] = None
+
+    rda_male: float | None = None
+    rda_female: float | None = None
+    upper_limit: float | None = None
     unit: str = ""
     name: str = ""
 
@@ -25,137 +25,222 @@ class NutritionalGuidelines:
         """Initialize with official RDA values for adults (19-70 years)."""
         self.guidelines = self._load_official_guidelines()
 
-    def _load_official_guidelines(self) -> Dict[str, NutrientRequirement]:
+    def _load_official_guidelines(self) -> dict[str, NutrientRequirement]:
         """Load official RDA values from NIH/USDA sources."""
         return {
             # vitamins (fat-soluble)
             "vitamin_a_ug": NutrientRequirement(
-                rda_male=900, rda_female=700, upper_limit=3000,
-                unit="μg", name="Vitamin A"
+                rda_male=900,
+                rda_female=700,
+                upper_limit=3000,
+                unit="μg",
+                name="Vitamin A",
             ),
             "vitamin_d_ug": NutrientRequirement(
-                rda_male=15, rda_female=15, upper_limit=100,
-                unit="μg", name="Vitamin D"
+                rda_male=15,
+                rda_female=15,
+                upper_limit=100,
+                unit="μg",
+                name="Vitamin D",
             ),
             "vitamin_e_mg": NutrientRequirement(
-                rda_male=15, rda_female=15, upper_limit=1000,
-                unit="mg", name="Vitamin E"
+                rda_male=15,
+                rda_female=15,
+                upper_limit=1000,
+                unit="mg",
+                name="Vitamin E",
             ),
             "vitamin_k_ug": NutrientRequirement(
-                rda_male=120, rda_female=90, upper_limit=None,
-                unit="μg", name="Vitamin K"
+                rda_male=120,
+                rda_female=90,
+                upper_limit=None,
+                unit="μg",
+                name="Vitamin K",
             ),
-
             # vitamins (water-soluble)
             "vitamin_c_mg": NutrientRequirement(
-                rda_male=90, rda_female=75, upper_limit=2000,
-                unit="mg", name="Vitamin C"
+                rda_male=90,
+                rda_female=75,
+                upper_limit=2000,
+                unit="mg",
+                name="Vitamin C",
             ),
             "thiamin_mg": NutrientRequirement(
-                rda_male=1.2, rda_female=1.1, upper_limit=None,
-                unit="mg", name="Thiamin (B1)"
+                rda_male=1.2,
+                rda_female=1.1,
+                upper_limit=None,
+                unit="mg",
+                name="Thiamin (B1)",
             ),
             "riboflavin_mg": NutrientRequirement(
-                rda_male=1.3, rda_female=1.1, upper_limit=None,
-                unit="mg", name="Riboflavin (B2)"
+                rda_male=1.3,
+                rda_female=1.1,
+                upper_limit=None,
+                unit="mg",
+                name="Riboflavin (B2)",
             ),
             "niacin_mg": NutrientRequirement(
-                rda_male=16, rda_female=14, upper_limit=35,
-                unit="mg", name="Niacin (B3)"
+                rda_male=16,
+                rda_female=14,
+                upper_limit=35,
+                unit="mg",
+                name="Niacin (B3)",
             ),
             "vitamin_b6_mg": NutrientRequirement(
-                rda_male=1.3, rda_female=1.3, upper_limit=100,
-                unit="mg", name="Vitamin B6"
+                rda_male=1.3,
+                rda_female=1.3,
+                upper_limit=100,
+                unit="mg",
+                name="Vitamin B6",
             ),
             "folate_ug": NutrientRequirement(
-                rda_male=400, rda_female=400, upper_limit=1000,
-                unit="μg", name="Folate"
+                rda_male=400,
+                rda_female=400,
+                upper_limit=1000,
+                unit="μg",
+                name="Folate",
             ),
             "vitamin_b12_ug": NutrientRequirement(
-                rda_male=2.4, rda_female=2.4, upper_limit=None,
-                unit="μg", name="Vitamin B12"
+                rda_male=2.4,
+                rda_female=2.4,
+                upper_limit=None,
+                unit="μg",
+                name="Vitamin B12",
             ),
-
             # minerals
             "calcium_mg": NutrientRequirement(
-                rda_male=1000, rda_female=1000, upper_limit=2500,
-                unit="mg", name="Calcium"
+                rda_male=1000,
+                rda_female=1000,
+                upper_limit=2500,
+                unit="mg",
+                name="Calcium",
             ),
             "iron_mg": NutrientRequirement(
-                rda_male=8, rda_female=18, upper_limit=45,
-                unit="mg", name="Iron"
+                rda_male=8,
+                rda_female=18,
+                upper_limit=45,
+                unit="mg",
+                name="Iron",
             ),
             "magnesium_mg": NutrientRequirement(
-                rda_male=400, rda_female=310, upper_limit=350,
-                unit="mg", name="Magnesium"
+                rda_male=400,
+                rda_female=310,
+                upper_limit=350,
+                unit="mg",
+                name="Magnesium",
             ),
             "phosphorus_mg": NutrientRequirement(
-                rda_male=700, rda_female=700, upper_limit=4000,
-                unit="mg", name="Phosphorus"
+                rda_male=700,
+                rda_female=700,
+                upper_limit=4000,
+                unit="mg",
+                name="Phosphorus",
             ),
             "potassium_mg": NutrientRequirement(
-                rda_male=3400, rda_female=2600, upper_limit=None,
-                unit="mg", name="Potassium"
+                rda_male=3400,
+                rda_female=2600,
+                upper_limit=None,
+                unit="mg",
+                name="Potassium",
             ),
             "sodium_mg": NutrientRequirement(
-                rda_male=1500, rda_female=1500, upper_limit=2300,
-                unit="mg", name="Sodium"
+                rda_male=1500,
+                rda_female=1500,
+                upper_limit=2300,
+                unit="mg",
+                name="Sodium",
             ),
             "zinc_mg": NutrientRequirement(
-                rda_male=11, rda_female=8, upper_limit=40,
-                unit="mg", name="Zinc"
+                rda_male=11,
+                rda_female=8,
+                upper_limit=40,
+                unit="mg",
+                name="Zinc",
             ),
             "copper_mg": NutrientRequirement(
-                rda_male=0.9, rda_female=0.9, upper_limit=10,
-                unit="mg", name="Copper"
+                rda_male=0.9,
+                rda_female=0.9,
+                upper_limit=10,
+                unit="mg",
+                name="Copper",
             ),
             "selenium_ug": NutrientRequirement(
-                rda_male=55, rda_female=55, upper_limit=400,
-                unit="μg", name="Selenium"
+                rda_male=55,
+                rda_female=55,
+                upper_limit=400,
+                unit="μg",
+                name="Selenium",
             ),
             "manganese_mg": NutrientRequirement(
-                rda_male=2.3, rda_female=1.8, upper_limit=11,
-                unit="mg", name="Manganese"
+                rda_male=2.3,
+                rda_female=1.8,
+                upper_limit=11,
+                unit="mg",
+                name="Manganese",
             ),
             "chromium_ug": NutrientRequirement(
-                rda_male=35, rda_female=25, upper_limit=None,
-                unit="μg", name="Chromium"
+                rda_male=35,
+                rda_female=25,
+                upper_limit=None,
+                unit="μg",
+                name="Chromium",
             ),
             "molybdenum_ug": NutrientRequirement(
-                rda_male=45, rda_female=45, upper_limit=2000,
-                unit="μg", name="Molybdenum"
+                rda_male=45,
+                rda_female=45,
+                upper_limit=2000,
+                unit="μg",
+                name="Molybdenum",
             ),
             "iodine_ug": NutrientRequirement(
-                rda_male=150, rda_female=150, upper_limit=1100,
-                unit="μg", name="Iodine"
+                rda_male=150,
+                rda_female=150,
+                upper_limit=1100,
+                unit="μg",
+                name="Iodine",
             ),
-
             # macronutrients (general guidelines)
             "protein_g": NutrientRequirement(
-                rda_male=56, rda_female=46, upper_limit=None,
-                unit="g", name="Protein"
+                rda_male=56,
+                rda_female=46,
+                upper_limit=None,
+                unit="g",
+                name="Protein",
             ),
             "fiber_g": NutrientRequirement(
-                rda_male=38, rda_female=25, upper_limit=None,
-                unit="g", name="Dietary Fiber"
+                rda_male=38,
+                rda_female=25,
+                upper_limit=None,
+                unit="g",
+                name="Dietary Fiber",
             ),
-
             # limits for harmful nutrients
             "saturated_fat_g": NutrientRequirement(
-                rda_male=None, rda_female=None, upper_limit=20,
-                unit="g", name="Saturated Fat"
+                rda_male=None,
+                rda_female=None,
+                upper_limit=20,
+                unit="g",
+                name="Saturated Fat",
             ),
             "cholesterol_mg": NutrientRequirement(
-                rda_male=None, rda_female=None, upper_limit=300,
-                unit="mg", name="Cholesterol"
+                rda_male=None,
+                rda_female=None,
+                upper_limit=300,
+                unit="mg",
+                name="Cholesterol",
             ),
             "sugars_g": NutrientRequirement(
-                rda_male=None, rda_female=None, upper_limit=50,
-                unit="g", name="Added Sugars"
-            )
+                rda_male=None,
+                rda_female=None,
+                upper_limit=50,
+                unit="g",
+                name="Added Sugars",
+            ),
         }
 
-    def get_requirement(self, nutrient_key: str, gender: str = "average") -> Dict:
+    def get_requirement(
+        self, nutrient_key: str, gender: str = "average"
+    ) -> dict:
         """
         Get requirement for a specific nutrient.
 
@@ -198,11 +283,11 @@ class NutritionalGuidelines:
             "unit": req.unit,
             "gender_specific": {
                 "male": req.rda_male,
-                "female": req.rda_female
-            }
+                "female": req.rda_female,
+            },
         }
 
-    def get_all_requirements(self, gender: str = "average") -> Dict:
+    def get_all_requirements(self, gender: str = "average") -> dict:
         """
         Get all nutrient requirements.
 
@@ -230,7 +315,7 @@ class NutritionalGuidelines:
                 "rda_female": req.rda_female,
                 "upper_limit": req.upper_limit,
                 "unit": req.unit,
-                "name": req.name
+                "name": req.name,
             }
 
         with open(filepath, "w") as f:
