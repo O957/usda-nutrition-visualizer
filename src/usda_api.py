@@ -22,15 +22,18 @@ class USDAFoodDataClient:
         Parameters
         ----------
         api_key : str | None
-            API key for USDA FoodData Central. If None, will try to load from environment.
-            Get a free API key at: https://fdc.nal.usda.gov/api-key-signup.html
+            API key for USDA FoodData Central. If None, will try to load from
+            environment. Get a free API key at:
+            https://fdc.nal.usda.gov/api-key-signup.html
         """
         self.api_key = api_key or os.getenv("USDA_API_KEY")
 
         if not self.api_key:
             raise ValueError(
-                "USDA API key required. Get one at: https://fdc.nal.usda.gov/api-key-signup.html\n"
-                "Pass via --api-key argument or set USDA_API_KEY environment variable"
+                "USDA API key required. Get one at: "
+                "https://fdc.nal.usda.gov/api-key-signup.html\n"
+                "Pass via --api-key argument or set USDA_API_KEY environment "
+                "variable"
             )
 
         self.base_url = "https://api.nal.usda.gov/fdc/v1"
@@ -222,7 +225,9 @@ class USDAFoodDataClient:
         """
 
         def format_food_name(name: str) -> str:
-            """Format food name by capitalizing and replacing commas with parentheses."""
+            """
+            Format food name by capitalizing and replacing commas with p
+            arentheses."""
             if "," in name:
                 main, descriptor = name.split(",", 1)
                 return f"{main.strip().title()} ({descriptor.strip().title()})"
@@ -307,7 +312,8 @@ def fetch_all_foods_paginated():
     # fetch remaining pages
     for page_num in range(2, total_pages + 1):
         print(
-            f"Fetching page {page_num}/{total_pages} ({len(all_food_items)} foods so far)",
+            f"Fetching page {page_num}/{total_pages} "
+            f"({len(all_food_items)} foods so far)",
             end="\r",
         )
 
@@ -380,7 +386,10 @@ def fetch_and_save_food_database(api_key: str, max_foods: int | None = None):
             continue
 
         print(
-            f"Processing: {i + 1}/{len(all_food_items)} ({len(all_foods)} saved, {failed_count} failed)",
+            (
+                f"Processing: {i + 1}/{len(all_food_items)} ({len(all_foods)} "
+                f"saved, {failed_count} failed)"
+            ),
             end="\r",
         )
 

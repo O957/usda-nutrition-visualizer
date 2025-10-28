@@ -1,6 +1,7 @@
 """
 Official nutritional guidelines and daily requirements from USDA/NIH.
-Based on Dietary Reference Intakes (DRIs) and Recommended Dietary Allowances (RDAs).
+Based on Dietary Reference Intakes (DRIs) and Recommended Dietary Allowances
+(RDAs).
 """
 
 import json
@@ -303,7 +304,7 @@ class NutritionalGuidelines:
         """
         return {
             nutrient_key: self.get_requirement(nutrient_key, gender)
-            for nutrient_key in self.guidelines.keys()
+            for nutrient_key in self.guidelines
         }
 
     def save_to_json(self, filepath: str = "data/nutritional_guidelines.json"):
@@ -342,12 +343,13 @@ class NutritionalGuidelines:
         # fuzzy matching for common variations
         nutrient_lower = nutrient_column.lower()
 
-        for key in self.guidelines.keys():
+        for key in self.guidelines:
             key_base = key.split("_")[0]  # e.g., "vitamin" from "vitamin_c_mg"
-            if key_base in nutrient_lower:
+            if key_base in nutrient_lower and key.replace(
+                "_", ""
+            ) in nutrient_column.replace("_", ""):
                 # check for more specific match
-                if key.replace("_", "") in nutrient_column.replace("_", ""):
-                    return key
+                return key
 
         return ""
 

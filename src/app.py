@@ -1,5 +1,6 @@
 """
-Streamlit application for food nutrient analysis and visualization.
+Streamlit application for food nutrient analysis and
+visualization.
 """
 
 import altair as alt
@@ -334,7 +335,8 @@ def render_nutrient_ranking(processor: NutrientProcessor):
             col1, col2 = st.columns([3, 1])
             with col1:
                 st.info(
-                    f"**{available_count}** foods available with {selected_display} data"
+                    f"**{available_count}** foods available with "
+                    f"{selected_display} data"
                 )
             with col2:
                 max_foods = min(
@@ -392,12 +394,14 @@ def main():
     if processor.df.is_empty():
         st.error("No food database found.")
         st.info(
-            "To use this application, you need to fetch data from the USDA API.\n\n"
+            "To use this application, you need to fetch data from the "
+            "USDA API.\n\n"
             "Run the following command:\n"
             "```bash\n"
             "python3 src/usda_api.py --api-key YOUR_API_KEY\n"
             "```\n\n"
-            "Get a free API key at: https://fdc.nal.usda.gov/api-key-signup.html"
+            "Get a free API key at: "
+            "https://fdc.nal.usda.gov/api-key-signup.html"
         )
         return
 
