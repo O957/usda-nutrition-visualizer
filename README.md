@@ -1,7 +1,52 @@
 # USDA Nutrition Visualizer
 
+_Streamlit application for vizualizing vitamin, mineral, and macronutrient content from the USDA FoodData Central API._
 
+> [!NOTE]
+>
+> The application is live at: <https://usda-nutri-viz.streamlit.app/>.
 
+## Features
+
+- **USDA FoodData Central Integration**: Direct access to comprehensive nutritional data for ~8100 foods.
+- **Interactive Visualizations**: Built with `altair` for clear, responsive data visualization.
+- **Food Analysis By Nutrient**: Compare vitamins, minerals, and macronutrients across foods.
+- **Nutrient Analysis By Food**: Compare foods across vitamins, minerals, and macronutrients.
+
+## Installation
+
+This project uses `uv` for dependency management. Installation instructions for `uv` can be found here: <https://github.com/astral-sh/uv>.
+
+To install `sort-by-citations`:
+
+```bash
+# clone the repository
+git clone https://github.com/O957/usda-nutrition-visualizer.git
+cd usda-nutrition-visualizer
+
+# install dependencies with uv
+uv sync
+```
+
+## Usage
+
+Run the application locally:
+
+```bash
+uv run streamlit run src/app.py
+```
+
+or just
+
+```bash
+streamlit run src/app.py
+```
+
+Then open your browser to `http://localhost:8501` (paste this in your browser).
+
+## Contributing
+
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## License Standard Notice
 
