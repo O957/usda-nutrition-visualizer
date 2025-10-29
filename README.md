@@ -1,8 +1,7 @@
-# BLANK README
+# USDA Nutrition Visualizer
 
-This repository was generated from [O957](https://github.com/O957)'s [template repository](https://github.com/O957/O957-Template).
 
-If you are seeing this message, then this repository likely contains no meaningful content.
+
 
 ## License Standard Notice
 
