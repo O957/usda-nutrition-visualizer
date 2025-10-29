@@ -1,6 +1,6 @@
 # USDA Nutrition Visualizer
 
-_Streamlit application for vizualizing vitamin, mineral, and macronutrient content from the USDA FoodData Central API._
+_Streamlit application for visualizing vitamin, mineral, and macronutrient content from the USDA FoodData Central API._
 
 > [!NOTE]
 >

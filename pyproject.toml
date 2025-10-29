@@ -4,7 +4,7 @@ version = "0.0.1"
 authors = [
   {name = "O957", email = "127630341+O957@users.noreply.github.com"},
 ]
-description = "Streamlit application for vizualizing vitamin, mineral, and macronutrient content from the USDA FoodData Central API."
+description = "Streamlit application for visualizing vitamin, mineral, and macronutrient content from the USDA FoodData Central API."
 license = "Apache-2.0"
 readme = "README.md"
 keywords = ["usda", "food", "data-visualization", "usda-fooddata-central", "streamlit", "python"]
