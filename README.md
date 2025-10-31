@@ -2,9 +2,9 @@
 
 _Streamlit application for visualizing vitamin, mineral, and macronutrient content from the USDA FoodData Central API._
 
-> [!NOTE]
+> [!IMPORTANT]
 >
-> The application is live at: <https://usda-nutri-viz.streamlit.app/>.
+> The application is live at: <https://usda-nutri-viz.streamlit.app/>. You may need to "wake up" the application, as `streamlit` cloud will shut down the application during periods of inactivity.
 
 ## Features
 
